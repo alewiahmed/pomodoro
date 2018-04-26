@@ -4,17 +4,17 @@ import './App.css';
 class App extends Component {
   state = {
     breakLength: 5,
-    timerState: null,
+    timerStatus: null,
     currentTime: 1500, // 25 minutes in seconds
     sessionLength: 25
   };
 
   timerHandler = () => {
-    let { timerState } = this.state;
-    switch (timerState) {
+    let { timerStatus } = this.state;
+    switch (timerStatus) {
       case 'running':
         this.setState({
-          timerState: 'paused'
+          timerStatus: 'paused'
         });
         this.stopTimer();
         break;
@@ -22,7 +22,7 @@ class App extends Component {
       case 'paused':
       default:
         this.setState({
-          timerState: 'running'
+          timerStatus: 'running'
         });
         this.startTimer();
         break;
@@ -54,19 +54,66 @@ class App extends Component {
     return seconds == 0 ? time : `${time}:${seconds}`;
   };
 
+  incrementSession = () => {
+    let { timerStatus } = this.state;
+    if (timerStatus === 'running') return;
+    this.setState(state => {
+      state.sessionLength++;
+      state.currentTime = state.sessionLength * 60;
+      return state;
+    });
+  };
+
+  decrementSession = () => {
+    let { timerStatus } = this.state;
+    if (timerStatus === 'running') return;
+    this.setState(state => {
+      state.sessionLength =
+        state.sessionLength === 1 ? 1 : --state.sessionLength;
+      state.currentTime = state.sessionLength * 60;
+      return state;
+    });
+  };
+
+  incrementBreak = () => {
+    let { timerStatus } = this.state;
+    if (timerStatus === 'running') return;
+    this.setState(state => {
+      state.breakLength++;
+      return state;
+    });
+  };
+
+  decrementBreak = () => {
+    let { timerStatus } = this.state;
+    if (timerStatus === 'running') return;
+    this.setState(state => {
+      state.breakLength = state.breakLength === 1 ? 1 : --state.breakLength;
+      return state;
+    });
+  };
+
   render() {
-    let { breakLength, sessionLength, currentTime } = this.state;
+    let { breakLength, sessionLength } = this.state;
     return (
       <div className="App">
         <div className="container">
           <div className="row">
             <div>
               <p className="adjusting-text">BREAK LENGHT</p>
-              <p>- {breakLength} +</p>
+              <div className="row">
+                <button onClick={this.decrementBreak}>-</button>
+                <p className="adjusted-time">{breakLength}</p>
+                <button onClick={this.incrementBreak}>+</button>
+              </div>
             </div>
             <div>
               <p className="adjusting-text">SESSION LENGHT</p>
-              <p>- {sessionLength} +</p>
+              <div className="row">
+                <button onClick={this.decrementSession}>-</button>
+                <p className="adjusted-time">{sessionLength}</p>
+                <button onClick={this.incrementSession}>+</button>
+              </div>
             </div>
           </div>
           <div className="timer" onClick={this.timerHandler}>
