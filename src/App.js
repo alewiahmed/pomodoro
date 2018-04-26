@@ -104,11 +104,15 @@ class App extends Component {
   };
 
   showTimerInSoconds = () => {
-    let { currentTime, currentBreak, currentTurn } = this.state;
+    let { currentTime, currentBreak, currentTurn, timerStatus } = this.state;
     let theTime = currentTurn === 'session' ? currentTime : currentBreak;
+
     let time = parseInt(theTime / 60, 10);
     let seconds = theTime % 60;
-    return seconds == 0 ? time : `${time}:${seconds}`;
+    seconds = seconds < 10 ? `0${seconds}` : seconds;
+    return seconds === '00' && timerStatus !== 'running'
+      ? time
+      : `${time}:${seconds}`;
   };
 
   incrementSessionLength = () => {
