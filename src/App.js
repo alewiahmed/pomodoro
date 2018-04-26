@@ -141,6 +141,7 @@ class App extends Component {
     if (timerStatus === 'running') return;
     this.setState(state => {
       state.breakLength++;
+      state.currentBreak = state.breakLength * 60;
       return state;
     });
   };
@@ -150,6 +151,7 @@ class App extends Component {
     if (timerStatus === 'running') return;
     this.setState(state => {
       state.breakLength = state.breakLength === 1 ? 1 : --state.breakLength;
+      state.currentBreak = state.breakLength * 60;
       return state;
     });
   };
