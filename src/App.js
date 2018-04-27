@@ -11,6 +11,10 @@ class App extends Component {
     currentTurn: 'session'
   };
 
+  componentDidMount = () => {
+    //this.drawProgress({ percent: 25, color: '#03a9f4' });
+  };
+
   timerHandler = () => {
     let { timerStatus, currentTurn } = this.state;
     switch (timerStatus) {
@@ -32,6 +36,7 @@ class App extends Component {
   };
 
   resetSession = () => {
+    this.clearCanvas();
     this.setState(state => {
       state.currentTime = state.sessionLength * 60;
       return state;
@@ -39,6 +44,7 @@ class App extends Component {
   };
 
   resetBreak = () => {
+    this.clearCanvas();
     this.setState(state => {
       state.currentBreak = state.breakLength * 60;
       return state;
@@ -75,6 +81,9 @@ class App extends Component {
       state.currentTime--;
       return state;
     });
+    let percent =
+      100 - this.state.currentTime * 100 / (this.state.sessionLength * 60);
+    this.drawProgress({ percent, color: '#03a9f4' });
   };
 
   handleBreak = () => {
@@ -101,6 +110,9 @@ class App extends Component {
       state.currentBreak--;
       return state;
     });
+    let percent =
+      100 - this.state.currentBreak * 100 / (this.state.breakLength * 60);
+    this.drawProgress({ percent, color: '#e60000' });
   };
 
   showTimerInSoconds = () => {
@@ -118,6 +130,7 @@ class App extends Component {
   incrementSessionLength = () => {
     let { timerStatus } = this.state;
     if (timerStatus === 'running') return;
+    this.clearCanvas();
     this.setState(state => {
       state.sessionLength++;
       state.currentTime = state.sessionLength * 60;
@@ -128,6 +141,7 @@ class App extends Component {
   decrementSessionLength = () => {
     let { timerStatus } = this.state;
     if (timerStatus === 'running') return;
+    this.clearCanvas();
     this.setState(state => {
       state.sessionLength =
         state.sessionLength === 1 ? 1 : --state.sessionLength;
@@ -139,6 +153,7 @@ class App extends Component {
   incrementBreakLength = () => {
     let { timerStatus } = this.state;
     if (timerStatus === 'running') return;
+    this.clearCanvas();
     this.setState(state => {
       state.breakLength++;
       state.currentBreak = state.breakLength * 60;
@@ -149,11 +164,47 @@ class App extends Component {
   decrementBreakLength = () => {
     let { timerStatus } = this.state;
     if (timerStatus === 'running') return;
+    this.clearCanvas();
     this.setState(state => {
       state.breakLength = state.breakLength === 1 ? 1 : --state.breakLength;
       state.currentBreak = state.breakLength * 60;
       return state;
     });
+  };
+
+  drawProgress = ({ percent, color }) => {
+    let ctx = this.canvas.getContext('2d');
+    this.drawCircleSlice(
+      ctx,
+      150,
+      150,
+      150,
+      Math.PI * 1.5,
+      Math.PI * (percent + 75) / 50, // startAngle + (percent * (2 * Math.pi)/100 )
+      color
+    );
+  };
+
+  drawCircleSlice = (
+    ctx,
+    centerX,
+    centerY,
+    radius,
+    startAngle,
+    endAngle,
+    color
+  ) => {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+    ctx.closePath();
+    ctx.fill();
+  };
+
+  clearCanvas = () => {
+    let ctx = this.canvas.getContext('2d');
+    ctx.clearRect(0, 0, 300, 300);
   };
 
   render() {
@@ -184,6 +235,13 @@ class App extends Component {
               {currentTurn === 'session' ? 'Session' : 'Break!'}
             </p>
             <p className="timer-text">{this.showTimerInSoconds()}</p>
+            <canvas
+              id="canv"
+              width="300"
+              height="300"
+              className="pie-canvas"
+              ref={r => (this.canvas = r)}
+            />
           </div>
         </div>
       </div>
