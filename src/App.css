@@ -4,7 +4,8 @@
   display: flex;
   text-align: center;
   align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-around;
   background-color: #6d0080;
 }
 
@@ -74,4 +75,9 @@ button {
 .pie-canvas {
   z-index: -1;
   position: absolute;
+}
+
+.github-link a {
+  color: white;
+  text-decoration: none;
 }

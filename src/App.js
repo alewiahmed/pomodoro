@@ -244,6 +244,11 @@ class App extends Component {
             />
           </div>
         </div>
+        <div className="github-link">
+          <a href="https://github.com/alewiahmed" target="_blank" rel="noopener noreferrer">
+            Alewi ahmed
+          </a>
+        </div>
       </div>
     );
   }
