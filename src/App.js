@@ -8,11 +8,9 @@ class App extends Component {
     currentTime: 1500, // 25 minutes in seconds
     currentBreak: 300,
     sessionLength: 25,
+    breakTouched: false,
+    sessionTouched: false,
     currentTurn: 'session'
-  };
-
-  componentDidMount = () => {
-    //this.drawProgress({ percent: 25, color: '#03a9f4' });
   };
 
   timerHandler = () => {
@@ -60,6 +58,7 @@ class App extends Component {
   };
 
   handleSession = () => {
+    this.clearCanvasIfTouched();
     this.decrementSession();
     this.startSession();
   };
@@ -87,6 +86,7 @@ class App extends Component {
   };
 
   handleBreak = () => {
+    this.clearCanvasIfTouched();
     this.decrementBreak();
     this.startBreak();
   };
@@ -139,45 +139,45 @@ class App extends Component {
   };
 
   incrementSessionLength = () => {
-    let { timerStatus } = this.state;
+    let { timerStatus, currentTurn } = this.state;
     if (timerStatus === 'running') return;
-    this.clearCanvas();
     this.setState(state => {
       state.sessionLength++;
       state.currentTime = state.sessionLength * 60;
+      state.sessionTouched = currentTurn === 'session' ? true : false;
       return state;
     });
   };
 
   decrementSessionLength = () => {
-    let { timerStatus } = this.state;
+    let { timerStatus, currentTurn } = this.state;
     if (timerStatus === 'running') return;
-    this.clearCanvas();
     this.setState(state => {
       state.sessionLength =
         state.sessionLength === 1 ? 1 : --state.sessionLength;
       state.currentTime = state.sessionLength * 60;
+      state.sessionTouched = currentTurn === 'session' ? true : false;
       return state;
     });
   };
 
   incrementBreakLength = () => {
-    let { timerStatus } = this.state;
+    let { timerStatus, currentTurn } = this.state;
     if (timerStatus === 'running') return;
-    this.clearCanvas();
     this.setState(state => {
       state.breakLength++;
       state.currentBreak = state.breakLength * 60;
+      state.breakTouched = currentTurn === 'break' ? true : false;
       return state;
     });
   };
 
   decrementBreakLength = () => {
-    let { timerStatus } = this.state;
+    let { timerStatus, currentTurn } = this.state;
     if (timerStatus === 'running') return;
-    this.clearCanvas();
     this.setState(state => {
       state.breakLength = state.breakLength === 1 ? 1 : --state.breakLength;
+      state.breakTouched = currentTurn === 'break' ? true : false;
       state.currentBreak = state.breakLength * 60;
       return state;
     });
@@ -216,6 +216,22 @@ class App extends Component {
   clearCanvas = () => {
     let ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, 300, 300);
+  };
+
+  clearCanvasIfTouched = () => {
+    let { breakTouched, sessionTouched, currentTurn } = this.state;
+    if (breakTouched && currentTurn === 'break') {
+      this.clearCanvas();
+      this.setState({
+        breakTouched: false
+      });
+    }
+    if (sessionTouched && currentTurn === 'session') {
+      this.clearCanvas();
+      this.setState({
+        sessionTouched: false
+      });
+    }
   };
 
   render() {
