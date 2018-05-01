@@ -115,16 +115,27 @@ class App extends Component {
     this.drawProgress({ percent, color: '#e60000' });
   };
 
-  showTimerInSoconds = () => {
+  showAppropriateTime = () => {
     let { currentTime, currentBreak, currentTurn, timerStatus } = this.state;
     let theTime = currentTurn === 'session' ? currentTime : currentBreak;
+    let hours = '';
+    let minutesInseconds = theTime;
+    let timeArray = [];
 
-    let time = parseInt(theTime / 60, 10);
-    let seconds = theTime % 60;
+    if (theTime > 3600) {
+      hours = parseInt(theTime / 3600, 10);
+      minutesInseconds = theTime % 3600;
+      timeArray.push(hours);
+    }
+    let minutes = parseInt(minutesInseconds / 60, 10);
+    let seconds = minutesInseconds % 60;
     seconds = seconds < 10 ? `0${seconds}` : seconds;
-    return seconds === '00' && timerStatus !== 'running'
-      ? time
-      : `${time}:${seconds}`;
+    minutes = minutes < 10 && hours !== '' ? `0${minutes}` : minutes;
+    timeArray.push(minutes, seconds);
+    if (seconds === '00' && timerStatus !== 'running') return theTime / 60;
+    return timeArray.reduce((acc, time) => {
+      return `${acc}:${time}`;
+    });
   };
 
   incrementSessionLength = () => {
@@ -234,7 +245,7 @@ class App extends Component {
             <p className="timer-text">
               {currentTurn === 'session' ? 'Session' : 'Break!'}
             </p>
-            <p className="timer-text">{this.showTimerInSoconds()}</p>
+            <p className="timer-text">{this.showAppropriateTime()}</p>
             <canvas
               id="canv"
               width="300"
@@ -245,7 +256,11 @@ class App extends Component {
           </div>
         </div>
         <div className="github-link">
-          <a href="https://github.com/alewiahmed" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://github.com/alewiahmed"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Alewi ahmed
           </a>
         </div>
