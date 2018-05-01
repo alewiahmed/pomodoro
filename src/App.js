@@ -67,7 +67,7 @@ class App extends Component {
     this.sessionInterval = setInterval(() => {
       let { currentTime } = this.state;
       this.decrementSession();
-      if (currentTime == 0) {
+      if (currentTime === 0) {
         clearInterval(this.sessionInterval);
         this.resetSession();
         this.setState({ currentTurn: 'break' }, this.startBreak);
@@ -76,13 +76,17 @@ class App extends Component {
   };
 
   decrementSession = () => {
-    this.setState(state => {
-      state.currentTime--;
-      return state;
-    });
-    let percent =
-      100 - this.state.currentTime * 100 / (this.state.sessionLength * 60);
-    this.drawProgress({ percent, color: '#03a9f4' });
+    this.setState(
+      state => {
+        state.currentTime--;
+        return state;
+      },
+      () => {
+        let percent =
+          100 - this.state.currentTime * 100 / (this.state.sessionLength * 60);
+        this.drawProgress({ percent, color: '#03a9f4' });
+      }
+    );
   };
 
   handleBreak = () => {
@@ -94,7 +98,7 @@ class App extends Component {
   startBreak = () => {
     this.breakInterval = setInterval(() => {
       let { currentBreak } = this.state;
-      if (currentBreak == 0) {
+      if (currentBreak === 0) {
         clearInterval(this.breakInterval);
         this.resetBreak();
         this.setState({
@@ -106,13 +110,17 @@ class App extends Component {
   };
 
   decrementBreak = () => {
-    this.setState(state => {
-      state.currentBreak--;
-      return state;
-    });
-    let percent =
-      100 - this.state.currentBreak * 100 / (this.state.breakLength * 60);
-    this.drawProgress({ percent, color: '#e60000' });
+    this.setState(
+      state => {
+        state.currentBreak--;
+        return state;
+      },
+      () => {
+        let percent =
+          100 - this.state.currentBreak * 100 / (this.state.breakLength * 60);
+        this.drawProgress({ percent, color: '#e60000' });
+      }
+    );
   };
 
   showAppropriateTime = () => {
