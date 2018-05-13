@@ -1,4 +1,5 @@
-html {
+html,
+#root {
   height: 100%;
 }
 
@@ -7,8 +8,5 @@ body {
   padding: 0;
   height: 100%;
   font-family: sans-serif;
-}
-
-#root {
-  height: 100%;
+  background-color: #6d0080;
 }
